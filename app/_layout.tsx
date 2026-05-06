@@ -11,6 +11,7 @@ export default function RootLayout() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
       <StatusBar style={"light"} />
       <Initiallayout />
+      
     </SafeAreaView>
   </ClerkAndConvexProvider>
   )

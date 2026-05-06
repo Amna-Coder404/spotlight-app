@@ -1,11 +1,27 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { useAuth } from '@clerk/clerk-expo'
+import { useAuth, useUser } from '@clerk/clerk-expo'
 
 export default function Home() {
   const { signOut } = useAuth();
+  const { user, isLoaded, isSignedIn } = useUser();
+
+  if (!isLoaded) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (!isSignedIn || !user) {
+    return <Text>No user found</Text>;
+  }
+
+  
+
   return (
     <View>
+      <Text style={{ color: "white" }}>
+        {user.fullName || "No Name"}
+      </Text>
+
       <TouchableOpacity
         onPress={() => signOut()}
         style={{

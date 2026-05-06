@@ -5,7 +5,6 @@ import { httpAction } from "./_generated/server";
 
 const http = httpRouter();
 
-
 http.route({
     path: "/clerk-webhook",
     method: "POST",
