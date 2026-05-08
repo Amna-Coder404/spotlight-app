@@ -59,7 +59,7 @@ const createScreen = () => {
       setCaption("");
       router.push("/(tabs)");
     } catch (error) {
-      console.log(" Error sharing post:", error);
+      console.log("  Error sharing post:", error);
     } finally {
       setIsSharing(false);
     }

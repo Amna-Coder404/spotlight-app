@@ -1,49 +1,35 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { useAuth, useUser } from '@clerk/clerk-expo'
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { useAuth } from '@clerk/clerk-expo'
+import { styles } from '@/styles/feed.styles';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { COLORS } from '@/constants/theme';
+import Story from '@/components/Story';
+import { STORIES } from '@/constants/mock-data';
+
+
 
 export default function Home() {
   const { signOut } = useAuth();
-  const { user, isLoaded, isSignedIn } = useUser();
-
-  if (!isLoaded) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (!isSignedIn || !user) {
-    return <Text>No user found</Text>;
-  }
-
-  
 
   return (
-    <View>
-      <Text style={{ color: "white" }}>
-        {user.fullName || "No Name"}
-      </Text>
+    <View style={styles.container}>
+      {/* HEADER SEACTION */}
 
-      <TouchableOpacity
-        onPress={() => signOut()}
-        style={{
-          backgroundColor: "#ff4d4d",
-          paddingVertical: 12,
-          paddingHorizontal: 20,
-          borderRadius: 10,
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: 10,
-        }}
-      >
-        <Text
-          style={{
-            color: "#fff",
-            fontSize: 16,
-            fontWeight: "600",
-          }}
-        >
-          Sign Out
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Spotlight </Text>
+        <TouchableOpacity onPress={() => signOut()}>
+          <Ionicons name='log-out-outline' size={24} color={COLORS.white} />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView horizontal showsVerticalScrollIndicator={false} style={styles.storiesContainer} >
+        {
+          STORIES.map((story) => (
+            <Story key={story.id} story={story} />
+          ))
+        }
+      </ScrollView>
     </View>
+
   )
 }
