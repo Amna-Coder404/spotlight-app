@@ -93,7 +93,37 @@ export const toggleLike = mutation({
         const currentUser = await getAuthenticatedUser(ctx);
 
         const exiting = await ctx.db.query("likes")
-            .withIndex("by_user_and_post", (q) => q.eq("userId", args.postId))
+            .withIndex("by_user_and_post", (q) => q.eq("userId", currentUser._id).eq("postId", args.postId))
             .first()
+
+        const post =await ctx.db.get(args.postId);
+        if (!post) throw new Error("Post not Found!");
+
+        if (exiting) {
+            // remove like
+            await ctx.db.delete(exiting._id);
+            await ctx.db.patch(args.postId, { likes: post.likes - 1 });
+            return false;
+        }
+        else {
+            // Add like
+            await ctx.db.insert("likes", {
+                userId: currentUser._id,
+                postId: args.postId
+            })
+
+            await ctx.db.patch(args.postId, { likes: post.likes + 1 });
+            // if it's not my post create a notifaication
+
+            if (currentUser._id !== post.userId) {
+                await ctx.db.insert("notification", {
+                    receiverId: post.userId,
+                    senderId: currentUser._id,
+                    type: "like",
+                    postId: args.postId
+                })
+            }
+            return true; //add like
+        }
     }
-    })
+}) 
