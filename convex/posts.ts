@@ -23,7 +23,7 @@ export const createPost = mutation({
         const imageUrl = await ctx.storage.getUrl(args.storageId)
         if (!imageUrl) throw new Error("Image Not found");
 
-
+        console.log("CREATE USER RUNNING")
         // Create a Post in DB (data base)
         const postId = await ctx.db.insert("posts", {
             userId: currentUser._id,
@@ -44,7 +44,7 @@ export const createPost = mutation({
 
 // This will create a Feeds
 
-export const getFeedPost = query({
+export const getFeedPosts = query({
     handler: async (ctx) => {
         const currentUser = await getAuthenticatedUser(ctx);
 
@@ -58,7 +58,7 @@ export const getFeedPost = query({
         // inhance post with user data
         const postsWithInfo = await Promise.all(
             posts.map(async (post) => {
-                const postAuthor = await ctx.db.get(post.userId);
+                const postAuthor = (await ctx.db.get(post.userId))!;
 
                 const like = await ctx.db.query("likes")
                     .withIndex("by_user_and_post",
@@ -70,22 +70,30 @@ export const getFeedPost = query({
                         (q) => q.eq("userId", currentUser._id)
                             .eq("postId", post._id)).first()
 
-
                 return {
-                    ...posts,
-                    auther: {
+                    ...post,
+                    author: {
                         _id: postAuthor?._id,
                         username: postAuthor?.username,
                         image: postAuthor?.image
                     },
                     isLiked: !!like,
                     isBookmarked: !!bookmark
-
                 }
-
-
             })
         )
+
         return postsWithInfo;
     }
 })
+
+export const toggleLike = mutation({
+    args: { postId: v.id("posts") },
+    handler: async (ctx, args) => {
+        const currentUser = await getAuthenticatedUser(ctx);
+
+        const exiting = await ctx.db.query("likes")
+            .withIndex("by_user_and_post", (q) => q.eq("userId", args.postId))
+            .first()
+    }
+    })
