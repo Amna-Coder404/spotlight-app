@@ -156,6 +156,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   commentContainer: {
+    
     flexDirection: "row",
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -218,3 +219,4 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+

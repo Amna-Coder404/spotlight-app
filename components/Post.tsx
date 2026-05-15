@@ -3,11 +3,13 @@ import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
 import { styles } from '@/styles/feed.styles'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { useMutation } from 'convex/react'
+import { useMutation, useQueries, useQuery } from 'convex/react'
 import { Image } from 'expo-image'
 import { Link } from 'expo-router'
 import { useState } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
+import CommentsModal from './CommentsModal'
+import { formatDistanceToNow } from 'date-fns'
 
 type PostProps = {
     post: {
@@ -31,9 +33,14 @@ type PostProps = {
 export default function Post({ post }: PostProps) {
     const [isLiked, setIsLiked] = useState(post.isLiked);
     const [likesCount, setLikesCount] = useState(post.likes);
-
     const toggleLike = useMutation(api.posts.toggleLike);
+    const [commentsCount, setCommentsCounts] = useState(post.comments)
+    const [showComments, setShowComments] = useState(false);
 
+
+
+
+    // Handle Likes
     const handleLike = async () => {
         try {
             const newIsLiked = await toggleLike({ postId: post._id })
@@ -88,7 +95,7 @@ export default function Post({ post }: PostProps) {
                     <TouchableOpacity onPress={handleLike}>
                         <Ionicons name={isLiked ? "heart" : "heart-outline"} size={24} color={isLiked ? COLORS.primary : COLORS.white} />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setShowComments(true)}>
                         <Ionicons name='chatbubble-outline' size={24} color={COLORS.white} />
                     </TouchableOpacity>
                 </View>
@@ -114,14 +121,25 @@ export default function Post({ post }: PostProps) {
                     </View>
                 )}
 
-                <TouchableOpacity>
-                    <Text style={styles.commentText}>View all 2 comments</Text>
+                <TouchableOpacity onPress={() => setShowComments(true)}>
+                    <Text style={styles.commentText}>
+                        {commentsCount > 1 ? (`View all ${commentsCount} comments`) : (`View ${commentsCount} comment`)}
+                    </Text>
                 </TouchableOpacity>
 
                 <Text style={styles.timeAgo}>
                     2 hours ago
                 </Text>
+
+                <CommentsModal
+                    postId={post._id}
+                    visible={showComments}
+                    onClose={() => setShowComments(false)}
+                    onCommentAdded={() => setCommentsCounts((prev) => prev + 1)}
+                />
             </View>
         </View>
     )
 }
+
+

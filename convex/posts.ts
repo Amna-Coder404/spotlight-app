@@ -113,6 +113,7 @@ export const toggleLike = mutation({
             })
 
             await ctx.db.patch(args.postId, { likes: post.likes + 1 });
+            
             // if it's not my post create a notifaication
 
             if (currentUser._id !== post.userId) {
@@ -123,7 +124,8 @@ export const toggleLike = mutation({
                     postId: args.postId
                 })
             }
-            return true; //add like
+            return true; 
         }
     }
 }) 
+

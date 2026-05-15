@@ -1,3 +1,4 @@
+// This FIle Are create data table for DB convex
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
 
@@ -30,8 +31,8 @@ export default defineSchema({
     }).index("by_post", ["postId"]).index("by_user_and_post", ["userId", "postId"]),
 
     comments: defineTable({
-        userId: v.id("user"),
-        postId: v.id("post"),
+        userId: v.id("users"),
+        postId: v.id("posts"),
         content: v.string()
     }).index("by_post", ["postId"]),
 
