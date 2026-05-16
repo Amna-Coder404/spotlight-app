@@ -156,7 +156,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   commentContainer: {
-    
+
     flexDirection: "row",
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -171,6 +171,8 @@ export const styles = StyleSheet.create({
   },
   commentContent: {
     flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   commentUsername: {
     color: COLORS.white,

@@ -10,6 +10,7 @@ import { useState } from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import CommentsModal from './CommentsModal'
 import { formatDistanceToNow } from 'date-fns'
+import { useUser } from '@clerk/clerk-expo'
 
 type PostProps = {
     post: {
@@ -31,14 +32,18 @@ type PostProps = {
 
 
 export default function Post({ post }: PostProps) {
+
+    const { user } = useUser();
+    const currentUser = useQuery(api.user.getUserByClerkId, user ? { clerkId: user.id } : "skip");
+
     const [isLiked, setIsLiked] = useState(post.isLiked);
     const [likesCount, setLikesCount] = useState(post.likes);
     const toggleLike = useMutation(api.posts.toggleLike);
     const [commentsCount, setCommentsCounts] = useState(post.comments)
     const [showComments, setShowComments] = useState(false);
-
-
-
+    const toggleBookmars = useMutation(api.bookmark.toggleBookmark);
+    const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
+    const deletePost = useMutation(api.posts.deletePost);
 
     // Handle Likes
     const handleLike = async () => {
@@ -49,6 +54,27 @@ export default function Post({ post }: PostProps) {
         }
         catch (error) {
             console.log("ERROR ", error);
+        }
+    }
+
+    // Handle Bookmarks
+    const handleBookmark = async () => {
+        try {
+            const newIsBookmarked = await toggleBookmars({ postId: post._id })
+            setIsBookmarked(newIsBookmarked);
+
+        }
+        catch (error) {
+            console.log("ERROR ", error);
+        }
+    }
+
+    // Delete Post
+    const handleDelete = async () => {
+        try {
+            await deletePost({ postId: post._id });
+        } catch (error) {
+            console.log("Error", error);
         }
     }
 
@@ -65,19 +91,25 @@ export default function Post({ post }: PostProps) {
                             contentFit='cover'
                             transition={200}
                             cachePolicy="memory-disk" />
-                        <Text style={styles.postUsername}>{post.author.username}</Text>
+                        <Text style={styles.postUsername}>{post.author.username}hi</Text>
                     </TouchableOpacity>
 
                 </Link>
-                {/* FIX IT LATER  :TODO 
+                {/* If I'm the owner of teh post ,show delete button */}
+                {
+                    post.author._id === currentUser?._id ? (
+                        <TouchableOpacity onPress={handleDelete}>
+                            <Ionicons name='trash-outline' size={20} color={COLORS.primary} />
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity>
+                            <Ionicons name='ellipsis-horizontal' size={20} color={COLORS.white} />
+                        </TouchableOpacity>
+                    )
+                }
 
-                <TouchableOpacity>
-                    <Ionicons name='ellipsis-horizontal' size={20} color={COLORS.white} />
-                </TouchableOpacity> */}
 
-                <TouchableOpacity>
-                    <Ionicons name='trash-outline' size={20} color={COLORS.white} />
-                </TouchableOpacity>
+
             </View>
 
 
@@ -101,10 +133,11 @@ export default function Post({ post }: PostProps) {
                 </View>
 
                 <View>
-                    <TouchableOpacity>
-                        <Ionicons name='bookmark-outline' size={24} color={COLORS.white} />
+                    <TouchableOpacity onPress={handleBookmark}>
+                        <Ionicons name={isBookmarked ? "bookmark" : "bookmark-outline"} size={24} color={isBookmarked ? COLORS.primary : COLORS.white} />
                     </TouchableOpacity>
                 </View>
+
             </View>
 
 
@@ -120,15 +153,20 @@ export default function Post({ post }: PostProps) {
                         <Text style={styles.captionText}>{post.caption}</Text>
                     </View>
                 )}
-
                 <TouchableOpacity onPress={() => setShowComments(true)}>
                     <Text style={styles.commentText}>
-                        {commentsCount > 1 ? (`View all ${commentsCount} comments`) : (`View ${commentsCount} comment`)}
+                        {
+                            commentsCount === 0
+                                ? "Add a comment"
+                                : commentsCount === 1
+                                    ? "View 1 comment"
+                                    : `View ${commentsCount} comments`
+                        }
                     </Text>
                 </TouchableOpacity>
 
                 <Text style={styles.timeAgo}>
-                    2 hours ago
+                    {formatDistanceToNow(post._creationTime, { addSuffix: true })}
                 </Text>
 
                 <CommentsModal

@@ -22,7 +22,7 @@ interface Comment {
 
 
 export default function Comments({ comment }: { comment: Comment }) {
-  const currentUser = useQuery(api.comments.getCurrentUser);
+  const currentUser = useQuery(api.user.getCurrentUser);
  const deleteComment = useMutation(api.comments.deleteComment);
 
    const handleDelete = async (commentId: Id<"comments">) => {
@@ -34,17 +34,23 @@ export default function Comments({ comment }: { comment: Comment }) {
     return (
         <View style={styles.commentContainer}>
             <Image source={{ uri: comment.user.image }} style={styles.commentAvatar} />
+
             <View style={styles.commentContent}>
-                <Text style={styles.commentUsername}>{comment.user.fullname}</Text>
+              <View>
+                  <Text style={styles.commentUsername}>{comment.user.fullname}</Text>
                 <Text style={styles.commentText}>{comment.content}</Text>
                 <Text style={styles.commentTime}>
                     {formatDistanceToNow(comment._creationTime, { addSuffix: true })}
                 </Text>
-               {currentUser?._id === comment.userId && (
+    
+              </View>
+              <View>
+                 {currentUser?._id === comment.userId && (
                  <TouchableOpacity onPress={() => handleDelete(comment._id)}>
                     <Ionicons name='trash' size={24} color={COLORS.white} />
                 </TouchableOpacity>
                )}
+              </View>
             </View>
         </View>
     )

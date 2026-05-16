@@ -1,4 +1,4 @@
-import { mutation, MutationCtx, QueryCtx } from "./_generated/server"
+import { mutation, MutationCtx, query, QueryCtx } from "./_generated/server"
 import { v } from "convex/values"
 
 export const createUser = mutation({
@@ -39,6 +39,20 @@ export const createUser = mutation({
     }
 })
 
+
+export const getUserByClerkId = query({
+    args : {clerkId : v.string()},
+
+    handler : async (ctx, args) => {
+            const user = ctx.db.query("users")
+            .withIndex("by_clerk_id", (q) => q.eq("clerkId", args.clerkId))
+            .unique();
+
+
+            return user;
+    }
+})
+
 // This will check Current user (here or not)
 export async function getAuthenticatedUser(ctx: QueryCtx | MutationCtx) {
     const identity = await ctx.auth.getUserIdentity();
@@ -51,3 +65,11 @@ export async function getAuthenticatedUser(ctx: QueryCtx | MutationCtx) {
 
     return currentUser;
 }
+
+
+
+export const getCurrentUser = query({
+  handler: async (ctx) => {
+    return await getAuthenticatedUser(ctx);
+  },
+});

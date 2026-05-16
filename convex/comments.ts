@@ -95,9 +95,3 @@ export const deleteComment = mutation({
 
 
 })
-
-export const getCurrentUser = query({
-  handler: async (ctx) => {
-    return await getAuthenticatedUser(ctx);
-  },
-});
