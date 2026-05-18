@@ -220,5 +220,46 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
+
+  // Not Post Found
+  noPostContainer: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+
+  noPostImage: {
+    width: 260,
+    height: 260,
+    resizeMode: "contain",
+    marginBottom: 20,
+  },
+
+  noPostTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: COLORS.white,
+    marginBottom: 8,
+  },
+
+  noPostSubtitle: {
+    fontSize: 15,
+    color: "#999",
+    textAlign: "center",
+    lineHeight: 22,
+    paddingHorizontal: 20,
+  },
+  noPostSubtitleLink: {
+    fontSize: 15,
+    color: COLORS.primary,
+    textAlign: "center",
+    lineHeight: 22,
+    paddingHorizontal: 20,
+
+    fontWeight: "600",
+  },
 });
 

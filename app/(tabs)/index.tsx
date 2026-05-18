@@ -10,7 +10,8 @@ import { Loader } from '@/components/Loader';
 import Post from '@/components/Post';
 import { useQuery } from 'convex/react';
 
-
+import { Image } from 'react-native';
+import { Link } from 'expo-router';
 
 export default function Home() {
   const { signOut } = useAuth();
@@ -19,6 +20,7 @@ export default function Home() {
   if (posts === undefined) return <Loader />
 
   if (posts.length === 0) return <NoPostFound />
+
 
 
 
@@ -61,15 +63,17 @@ const StoriesSection = () => (
   </ScrollView>
 )
 const NoPostFound = () => (
-  <View style={{
-    flex: 1,
-    backgroundColor: COLORS.background,
-    justifyContent: "center",
-    alignItems: "center"
-  }}>
-
-    <Text style={{ fontSize: 20, color: COLORS.primary }}> No Post yet !!</Text>
+  <View style={styles.noPostContainer}>
+    <Image source={require("../../assets/images/not_post_yet.png")} style={styles.noPostImage} />
+    <Text style={styles.noPostSubtitle}> Start sharing your thoughts, photos, and moments with others.</Text>
+      <Link href="/(tabs)/create" asChild>
+      <TouchableOpacity>
+        <Text style={styles.noPostSubtitleLink}>
+          Create Post
+        </Text>
+      </TouchableOpacity>
+    </Link>
   </View>
 )
- 
+
 
