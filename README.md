@@ -1,17 +1,47 @@
-Key Features:
-🚀 React Native + Expo - Build cross-platform mobile apps with React knowledge
-📱 Real-time Social Media App - Works on iOS, Android, and simulators
-🔐 Authentication with Clerk - Seamless Google login integration
-🔄 Convex Backend - Powers real-time features and data management
-📊 7 Different Screens - Auth, Home, Bookmarks, Create, Notifications, Profile, and User Profiles
-❤️ Interactive Features - Like, comment, bookmark, and follow functionality
-🖼️ Media Handling - Upload and share images from your device
-🔔 Notification System - Like, follow, and comment notifications
-✏️ Profile Editing - Animated modal for profile customization
-📱 Fundamental Components - Learn all essential React Native UI components
-🚀 Special Files & Folders - Master app, tabs & layout structure
-📚 Mobile Dev Concepts - Splash screen, SafeAreaView, tab/stack navigators
-⚡ Performance Optimization 
-🎨 Custom Styling - Implement custom fonts and app icons
-🔄 Webhooks Integration - Learn interview-ready backend concepts
-💻 No Mac Required - Develop on any internet-connected laptop
+# Social Media App (React Native + Expo)
+
+A modern real-time social media mobile application built with React Native, Expo, Clerk authentication, and Convex backend.
+
+---
+
+## ✨ Key Features
+
+- 🚀 **React Native + Expo** – Build powerful cross-platform mobile apps using React knowledge  
+- 📱 **Real-time Social Media App** – Works smoothly on iOS, Android, and simulators  
+- 🔐 **Authentication with Clerk** – Secure Google login integration  
+- 🔄 **Convex Backend** – Real-time database and backend functions  
+- 📊 **Multi-Screen App** – Auth, Home, Bookmarks, Create, Notifications, Profile, User Profiles  
+- ❤️ **Social Features** – Like, comment, bookmark, and follow system  
+- 🖼️ **Media Upload** – Upload and share images from device  
+- 🔔 **Notifications System** – Like, follow, and comment alerts  
+- ✏️ **Profile Editing** – Animated modal for editing profile details  
+- 📱 **React Native Core Concepts** – Learn essential UI components  
+- 🧭 **App Structure** – Master navigation, tabs, and layout system  
+- 📚 **Mobile Development Basics** – Splash screen, SafeAreaView, navigation patterns  
+- ⚡ **Performance Optimization** – Smooth and efficient app performance  
+- 🎨 **Custom UI Design** – Fonts, icons, and modern styling system  
+- 🔄 **Webhooks Integration** – Real-world backend communication  
+- 💻 **Cross-Platform Development** – Works on any laptop (no Mac required)
+
+---
+
+## 🛠️ Tech Stack
+
+- React Native  
+- Expo  
+- Clerk Authentication  
+- Convex Backend  
+- TypeScript / JavaScript  
+
+---
+
+
+
+## 🚀 Getting Started
+
+### 1. Install dependencies
+
+```bash
+- npm install
+- `npm start` → runs your mobile app (Expo)
+- `npx convex dev` → runs backend server (Convex)
