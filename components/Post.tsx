@@ -91,7 +91,7 @@ export default function Post({ post }: PostProps) {
                             contentFit='cover'
                             transition={200}
                             cachePolicy="memory-disk" />
-                        <Text style={styles.postUsername}>{post.author.username}hi</Text>
+                        <Text style={styles.postUsername}>{post.author.username}</Text>
                     </TouchableOpacity>
 
                 </Link>

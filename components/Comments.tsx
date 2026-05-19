@@ -7,7 +7,7 @@ import { COLORS } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';
 import { useMutation, useQuery } from 'convex/react';
 import { Id } from '@/convex/_generated/dataModel';
-import { getAuthenticatedUser } from '@/convex/user';
+
 interface Comment {
     _id: Id<"comments">,
     userId: Id<"users">,

@@ -82,7 +82,9 @@ export const styles = StyleSheet.create({
     color: COLORS.white,
   },
   postImage: {
+
     width: width,
+    
     height: width,
   },
   postActions: {

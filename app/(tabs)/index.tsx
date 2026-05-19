@@ -12,6 +12,7 @@ import { useQuery } from 'convex/react';
 
 import { Image } from 'react-native';
 import { Link } from 'expo-router';
+import StoriesSection from '@/components/Stories';
 
 export default function Home() {
   const { signOut } = useAuth();
@@ -53,15 +54,7 @@ export default function Home() {
   )
 }
 
-const StoriesSection = () => (
-  <ScrollView horizontal showsVerticalScrollIndicator={false} style={styles.storiesContainer}>
-    {
-      STORIES.map((story) => (
-        <Story key={story.id} story={story} />
-      ))
-    }
-  </ScrollView>
-)
+
 const NoPostFound = () => (
   <View style={styles.noPostContainer}>
     <Image source={require("../../assets/images/not_post_yet.png")} style={styles.noPostImage} />

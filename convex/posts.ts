@@ -23,7 +23,7 @@ export const createPost = mutation({
         const imageUrl = await ctx.storage.getUrl(args.storageId)
         if (!imageUrl) throw new Error("Image Not found");
 
-    
+
         // Create a Post in DB (data base)
         const postId = await ctx.db.insert("posts", {
             userId: currentUser._id,
@@ -129,7 +129,6 @@ export const toggleLike = mutation({
     }
 })
 
-
 // Delete Post 
 export const deletePost = mutation({
     args: {
@@ -175,6 +174,19 @@ export const deletePost = mutation({
             await ctx.db.delete(bookmark._id);
         }
 
+        //  Delete Associated  Notifications
+
+
+        const notifaications = await ctx.db.query("notification")
+            .withIndex("by_post", (q) => q.eq("postId", args.postId))
+            .collect()
+
+        // const notifaications = await ctx.db.query("notification")
+        //     .withIndex("by_receiver", (q) => q.eq("receiverId", post.userId))
+        //     .collect()
+        for (const notifaication of notifaications) {
+            await ctx.db.delete(notifaication._id);
+        }
 
         // Delete post from stroage
         await ctx.storage.delete(post.storageId);
@@ -188,3 +200,20 @@ export const deletePost = mutation({
 
 
 })
+
+
+export const getPostByUser = query({
+    args: {
+        userId: v.optional(v.id("users")),
+    },
+    handler: async (ctx, args) => {
+        const user = args.userId ? await ctx.db.get(args.userId) : await getAuthenticatedUser(ctx);
+        if (!user) throw new Error("User Not Found!");
+
+        const posts = ctx.db.query("posts")
+            .withIndex("by_user", (q) => q.eq("userId", args.userId || user._id))
+            .collect();
+
+        return posts;
+    },
+});

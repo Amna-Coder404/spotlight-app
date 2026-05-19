@@ -59,7 +59,7 @@ export default function CommentsModal({ postId, visible, onClose, onCommentAdded
                     <Loader />
                 ) : (
                     <FlatList
-                        keyExtractor={(item) => item._id}
+                        keyExtractor={(item) => item._id.toString()}
                         data={comments}
                         renderItem={({ item }) => <Comments comment={item} />}
                         contentContainerStyle={styles.commentsList} />
