@@ -117,8 +117,9 @@ export const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(133, 133, 133, 0.22)",
     justifyContent: "flex-end",
+    
   },
   modalContent: {
     backgroundColor: COLORS.background,
@@ -127,12 +128,14 @@ export const styles = StyleSheet.create({
     padding: 20,
     minHeight: 400,
   },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
+modalHeader: {
+  width: "100%",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 20,
+  paddingHorizontal: 5,
+},
   modalTitle: {
     color: COLORS.white,
     fontSize: 18,
@@ -239,4 +242,36 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: COLORS.white,
   },
+  profileImageEditContainer: {
+  alignItems: "center",
+  justifyContent: "center",
+  marginBottom: 25,
+  position: "relative",
+},
+profileEditAvatar: {
+  width: 110,
+  height: 110,
+  borderRadius: 55,
+  borderWidth: 3,
+  borderColor: COLORS.primary,
+},
+cameraIconOverlay: {
+  position: "absolute",
+  bottom: 5,
+  right: 5,
+  backgroundColor: COLORS.primary,
+  width: 34,
+  height: 34,
+  borderRadius: 17,
+  justifyContent: "center",
+  alignItems: "center",
+  borderWidth: 2,
+  borderColor: COLORS.background,
+},
+
+profileImageHint: {
+  color: COLORS.grey,
+  fontSize: 12,
+  marginTop: 6,
+},
 });

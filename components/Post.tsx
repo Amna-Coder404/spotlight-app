@@ -93,6 +93,7 @@ export default function Post({ post }: PostProps) {
                             contentFit='cover'
                             transition={200}
                             cachePolicy="memory-disk" />
+            
                         <Text style={styles.postUsername}>{post.author.username}</Text>
                     </TouchableOpacity>
 
@@ -104,9 +105,7 @@ export default function Post({ post }: PostProps) {
                             <Ionicons name='trash-outline' size={20} color={COLORS.primary} />
                         </TouchableOpacity>
                     ) : (
-                        <TouchableOpacity>
-                            <Ionicons name='ellipsis-horizontal' size={20} color={COLORS.white} />
-                        </TouchableOpacity>
+                        null
                     )
                 }
 

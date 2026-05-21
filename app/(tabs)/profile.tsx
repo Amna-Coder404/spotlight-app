@@ -9,8 +9,17 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { COLORS } from '@/constants/theme';
 import { Image } from 'expo-image';
 import { Loader } from '@/components/Loader';
+import * as ImagePicker from "expo-image-picker";
+import FullImageModal from '@/components/FullImageModel';
+
+
 
 const Profile = () => {
+  const [showProfileImage, setShowProfileImage] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
+  const updateProfileImage = useMutation(api.user.updateProfileImage);
+
   const { signOut, userId } = useAuth();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const currentUser = useQuery(api.user.getUserByClerkId, userId ? { clerkId: userId } : "skip");
@@ -28,7 +37,49 @@ const Profile = () => {
     setIsEditModalVisible(false);
   };
 
+
+
   if (!currentUser || posts === undefined) return <Loader />;
+
+
+  const changeProfileImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: "images",
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8
+      })
+
+      if (result.canceled) return;
+
+      setIsUploading(true);
+
+      const imageUri = result.assets[0].uri;
+
+      // 1. get upload url
+      const uploadUrl = await generateUploadUrl();
+
+      // 2. upload image
+      const uploadResult = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "image/jpeg",
+        },
+        body: await (await fetch(imageUri)).blob(),
+      });
+
+      const { storageId } = await uploadResult.json();
+
+      // 3. update profile in DB
+      await updateProfileImage({ storageId });
+
+    } catch (error) {
+      console.log("Profile image update error:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
   return (
     <View style={styles.container}>
       {/* HEADER */}
@@ -49,10 +100,13 @@ const Profile = () => {
         <View style={styles.profileInfo}>
           {/* AVATAR & STATS */}
           <View style={styles.avatarAndStats}>
-            <View style={styles.avatarContainer}>
-              <Image source={currentUser?.image} style={styles.avatar} contentFit='cover' transition={200} />
-            </View>
-
+            <TouchableOpacity onPress={() => setShowProfileImage(true)}>
+              <Image
+                source={{ uri: currentUser?.image }}
+                style={styles.avatar}
+                contentFit="cover"
+              />
+            </TouchableOpacity>
 
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
@@ -101,65 +155,94 @@ const Profile = () => {
 
 
       {/* EDIT PROFILE MODAL */}
-      
-        <Modal visible={isEditModalVisible} animationType='slide' transparent={true} onRequestClose={() => setIsEditModalVisible(false)}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <View style={styles.modalHeader}>
-                  <Text>Edit Post</Text>
-                  <TouchableOpacity onPress={() => setIsEditModalVisible(false)}>
-                    <Ionicons name='close' size={24} color={COLORS.white} />
-                  </TouchableOpacity>
-                </View>
+      <Modal visible={isEditModalVisible} animationType='slide' transparent={true} onRequestClose={() => setIsEditModalVisible(false)}>
 
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>Name</Text>
-                  <TextInput
-                    style={styles.input}
-                    value={editedProfile.fullname}
-                    onChangeText={(text) => setEditedProfile((prev) => ({ ...prev, fullname: text }))}
-                  />
-                </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.modalContainer}>
+            <View style={styles.modalContent}>
 
-                <View style={styles.inputContainer}>
-                  <Text style={styles.inputLabel}>Bio</Text>
-                  <TextInput
-                    style={[styles.input, styles.bioInput]}
-                    value={editedProfile.bio}
-                    onChangeText={(text) => setEditedProfile((prev) => ({ ...prev, bio: text }))}
-                  />
-                </View>
+              {/* HEADER FIRST */}
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Edit Profile</Text>
 
-                <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile}>
-                  <Text style={styles.saveButtonText}>Save Changes</Text>
+                <TouchableOpacity onPress={() => setIsEditModalVisible(false)}>
+                  <Ionicons name="close" size={24} color={COLORS.white} />
                 </TouchableOpacity>
               </View>
-            </KeyboardAvoidingView>
-          </TouchableWithoutFeedback>
-        </Modal>
 
+              {/* PROFILE IMAGE */}
+              <View style={styles.profileImageEditContainer}>
+                <TouchableOpacity onPress={changeProfileImage}>
+                  <Image
+                    source={{ uri: currentUser?.image }}
+                    style={styles.profileEditAvatar}
+                    contentFit="cover"
+                  />
 
+                  <View style={styles.cameraIconOverlay}>
+                    <Ionicons name="camera" size={18} color="white" />
+                  </View>
+                </TouchableOpacity>
 
+                <Text style={styles.profileImageHint}>
+                  Tap to change profile photo
+                </Text>
+              </View>
+
+              {/* NAME */}
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Name</Text>
+                <TextInput
+                  style={styles.input}
+                  value={editedProfile.fullname}
+                  onChangeText={(text) =>
+                    setEditedProfile((prev) => ({ ...prev, fullname: text }))
+                  }
+                />
+              </View>
+
+              {/* BIO */}
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>Bio</Text>
+                <TextInput
+                  style={[styles.input, styles.bioInput]}
+                  value={editedProfile.bio}
+                  onChangeText={(text) =>
+                    setEditedProfile((prev) => ({ ...prev, bio: text }))
+                  }
+                />
+              </View>
+
+              {/* SAVE */}
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={handleSaveProfile}
+              >
+                <Text style={styles.saveButtonText}>Save Changes</Text>
+              </TouchableOpacity>
+
+            </View>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </Modal>
 
 
 
 
       {/* SELECTED IMAGE MODAL */}
-      <Modal visible={!!selectPost} animationType='fade' transparent={true} onRequestClose={() => setSelectPost(null)}>
-        <View style={styles.modalBackdrop}>
-          {selectPost && (
-            <View style={styles.postDetailContainer}>
-              <View style={styles.postDetailHeader}>
-                <TouchableOpacity onPress={() => setSelectPost(null)}>
-                  <Ionicons name='close' size={24} color={COLORS.white} />
-                </TouchableOpacity>
-              </View>
-              <Image source={selectPost.imageUrl} cachePolicy={"memory-disk"} style={styles.postDetailImage} />
-            </View>
-          )}
-        </View>
-      </Modal>
+      <FullImageModal
+        visible={!!selectPost}
+        imageUrl={selectPost?.imageUrl || null}
+        setVisible={(v) => {
+          if (!v) setSelectPost(null);
+        }}
+      />
+
+      <FullImageModal
+        visible={showProfileImage}
+        imageUrl={currentUser?.image || null}
+        setVisible={(v) => setShowProfileImage(v)}
+      />
     </View>
   )
 }

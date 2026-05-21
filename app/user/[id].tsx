@@ -9,8 +9,10 @@ import { styles } from '@/styles/profile.styles'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { COLORS } from '@/constants/theme'
 import { Image } from 'expo-image'
+import FullImageModal from '@/components/FullImageModel'
 
 export default function UserProfileSection() {
+    const [showProfileImage, setShowProfileImage] = useState(false);
     const { id } = useLocalSearchParams();
     const [selectPost, setSelectPost] = useState<Doc<"posts"> | null>(null);
     const profile = useQuery(api.user.getUserProfile, { id: id as Id<"users"> });
@@ -43,11 +45,11 @@ export default function UserProfileSection() {
                 <View style={styles.profileInfo}>
                     <View style={styles.avatarAndStats}>
                         {/* AVATOR */}
-                        <Image source={profile.image}
-                            style={styles.avatar}
-                            contentFit="cover"
-                            cachePolicy="memory-disk"
-                        />
+
+                        <TouchableOpacity onPress={() => setShowProfileImage(true)}>
+                            <Image source={profile.image} style={styles.avatar} />
+                        </TouchableOpacity>
+
 
                         {/* STATS */}
                         <View style={styles.statsContainer}>
@@ -105,22 +107,18 @@ export default function UserProfileSection() {
                             />
                         )}
                 </View>
-                <Modal visible={!!selectPost} animationType='fade' transparent={true} onRequestClose={() => setSelectPost(null)}>
-                    <View style={styles.modalBackdrop}>
-                        {selectPost && (
-                            <View style={styles.postDetailContainer}>
-                                <View style={styles.postDetailHeader}>
-                                    <TouchableOpacity onPress={() => setSelectPost(null)}>
-                                        <Ionicons name='close' size={24} color={COLORS.white} />
-                                    </TouchableOpacity>
-                                </View>
-                                <Image source={selectPost.imageUrl} cachePolicy={"memory-disk"} style={styles.postDetailImage} />
-                            </View>
-                        )}
-                    </View>
-                </Modal>
-            </ScrollView>
+                <FullImageModal
+                    visible={!!selectPost}
+                    imageUrl={selectPost?.imageUrl || null}
+                    setVisible={() => setSelectPost(null)}
+                />
 
+            </ScrollView>
+<FullImageModal
+  visible={showProfileImage}
+  imageUrl={profile.image}
+  setVisible={setShowProfileImage}
+/>
         </View>
     )
 }

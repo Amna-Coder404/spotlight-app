@@ -3,7 +3,14 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { COLORS } from '../../constants/theme';
+import { useAuth } from '@clerk/clerk-expo';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { styles } from '@/styles/feed.styles'
+import { Image } from 'expo-image';
 const TabsLayout = () => {
+    const { userId } = useAuth();
+    const currentUser = useQuery(api.user.getUserByClerkId, userId ? { clerkId: userId } : "skip");
     return (
         <Tabs screenOptions={{
             tabBarShowLabel: false,
@@ -44,7 +51,23 @@ const TabsLayout = () => {
 
             <Tabs.Screen name='profile'
                 options={{
-                    tabBarIcon: ({ size, color }) => <Ionicons name="person-circle-sharp" size={size} color={color} />
+                    // tabBarIcon: ({ size, color }) => <Ionicons name="person-circle-sharp" size={size} color={color} />
+                    tabBarIcon: ({ size }) => (
+                        <Image
+                            source={{ uri: currentUser?.image }}
+                            style={[
+                                
+                                {
+                                    width: size,
+                                    height: size,
+                                    borderRadius: size / 2,
+                                },
+                            ]}
+                            contentFit="cover"
+                            transition={200}
+                            cachePolicy="memory-disk"
+                        />
+                    )
                 }}
             />
         </Tabs>

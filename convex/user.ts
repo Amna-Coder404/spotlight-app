@@ -180,3 +180,21 @@ async function updateFollowCounts(
         });
     }
 }
+
+export const updateProfileImage = mutation({
+  args: {
+    storageId: v.id("_storage"),
+  },
+
+  handler: async (ctx, args) => {
+    const user = await getAuthenticatedUser(ctx);
+
+    const url = await ctx.storage.getUrl(args.storageId);
+if (!url) {
+  throw new Error("Image URL not found");
+}
+    await ctx.db.patch(user._id, {
+      image: url,
+    });
+  },
+});
