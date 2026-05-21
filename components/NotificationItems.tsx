@@ -8,7 +8,7 @@ import { Image } from 'expo-image'
 import { formatDistanceToNow } from 'date-fns'
 
 const NotificationItems = ({ notification }: any) => {
-  console.log("notification", notification.type);
+
   return (
     <View style={styles.notificationItem}>
       <View style={styles.notificationContent}>
@@ -34,7 +34,7 @@ const NotificationItems = ({ notification }: any) => {
         </Link>
 
         <View style={styles.notificationInfo}>
-          {/* <Link href={`/user/${notification.sender._id}`} asChild> */}
+        
           <Link href={`/user/${notification.sender._id}`} asChild>
             <TouchableOpacity>
               <Text style={styles.username}>{notification.sender.username}</Text>

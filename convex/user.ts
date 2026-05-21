@@ -84,7 +84,7 @@ export const updateProfile = mutation({
 });
 
 
-export const getCurrentUser = query({  
+export const getCurrentUser = query({
     handler: async (ctx) => {
         return await getAuthenticatedUser(ctx);
     },
@@ -143,9 +143,9 @@ export const toggleFollow = mutation({
 
             // Create a notification
             await ctx.db.insert("notification", {
-                receiverId :args.followingId,
-                senderId : currentUser._id,
-                type : "follow"
+                receiverId: args.followingId,
+                senderId: currentUser._id,
+                type: "follow"
             });
         }
     },
@@ -158,14 +158,25 @@ async function updateFollowCounts(
     isFollowing: boolean
 ) {
     const follower = await ctx.db.get(followerId);
-    const following = await ctx.db.get(followerId);
+    const following = await ctx.db.get(followingId);
+    if (!follower || !following) return;
+
+    const followerFollowingCount = follower.following ?? 0;
+    const followingFollowerCount = following.follower ?? 0;
 
     if (follower && following) {
+
         await ctx.db.patch(followerId, {
-            following: follower.following + (isFollowing ? 1 : -1),
-        })
+            following: Math.max(
+                0,
+                followerFollowingCount + (isFollowing ? 1 : -1)
+            ),
+        });
         await ctx.db.patch(followingId, {
-            follower: following.follower + (isFollowing ? 1 : -1),
-        })
+            follower: Math.max(
+                0,
+                followingFollowerCount + (isFollowing ? 1 : -1)
+            ),
+        });
     }
 }

@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, ScrollView, Pressable, FlatList } from 'react-native'
-import React from 'react'
+import { View, Text, TouchableOpacity, ScrollView, Pressable, FlatList, Modal } from 'react-native'
+import React, { useState } from 'react'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
-import { useLocalSearchParams } from 'expo-router'
-import { Id } from '@/convex/_generated/dataModel'
+import { router, useLocalSearchParams } from 'expo-router'
+import { Doc, Id } from '@/convex/_generated/dataModel'
 import { Loader } from '@/components/Loader'
 import { styles } from '@/styles/profile.styles'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -12,14 +12,17 @@ import { Image } from 'expo-image'
 
 export default function UserProfileSection() {
     const { id } = useLocalSearchParams();
-
+    const [selectPost, setSelectPost] = useState<Doc<"posts"> | null>(null);
     const profile = useQuery(api.user.getUserProfile, { id: id as Id<"users"> });
     const posts = useQuery(api.posts.getPostByUser, { userId: id as Id<"users"> });
     const isFollowing = useQuery(api.user.isFollowing, { followingId: id as Id<"users"> });
 
     const toggleFollow = useMutation(api.user.toggleFollow);
 
-    const handleback = () => { };
+    const handleback = () => {
+        if (router.canGoBack()) router.back();
+        else router.replace("/(tabs)");
+    };
 
     if (profile === undefined || posts === undefined || isFollowing === undefined) return <Loader />
 
@@ -87,13 +90,14 @@ export default function UserProfileSection() {
                                 numColumns={3}
                                 scrollEnabled={false}
                                 renderItem={({ item }) => (
-                                    <TouchableOpacity style={styles.gridItem}>
+                                    <TouchableOpacity style={styles.gridItem} onPress={() => setSelectPost(item)}>
                                         <Image
                                             source={item.imageUrl}
                                             style={styles.gridImage}
                                             contentFit="cover"
                                             transition={200}
                                             cachePolicy="memory-disk"
+
                                         />
                                     </TouchableOpacity>
                                 )}
@@ -101,7 +105,20 @@ export default function UserProfileSection() {
                             />
                         )}
                 </View>
-
+                <Modal visible={!!selectPost} animationType='fade' transparent={true} onRequestClose={() => setSelectPost(null)}>
+                    <View style={styles.modalBackdrop}>
+                        {selectPost && (
+                            <View style={styles.postDetailContainer}>
+                                <View style={styles.postDetailHeader}>
+                                    <TouchableOpacity onPress={() => setSelectPost(null)}>
+                                        <Ionicons name='close' size={24} color={COLORS.white} />
+                                    </TouchableOpacity>
+                                </View>
+                                <Image source={selectPost.imageUrl} cachePolicy={"memory-disk"} style={styles.postDetailImage} />
+                            </View>
+                        )}
+                    </View>
+                </Modal>
             </ScrollView>
 
         </View>

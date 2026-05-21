@@ -37,9 +37,9 @@ export default function Post({ post }: PostProps) {
     const currentUser = useQuery(api.user.getUserByClerkId, user ? { clerkId: user.id } : "skip");
 
     const [isLiked, setIsLiked] = useState(post.isLiked);
-    const [likesCount, setLikesCount] = useState(post.likes);
+
     const toggleLike = useMutation(api.posts.toggleLike);
-    const [commentsCount, setCommentsCounts] = useState(post.comments)
+ 
     const [showComments, setShowComments] = useState(false);
     const toggleBookmars = useMutation(api.bookmark.toggleBookmark);
     const [isBookmarked, setIsBookmarked] = useState(post.isBookmarked);
@@ -50,7 +50,7 @@ export default function Post({ post }: PostProps) {
         try {
             const newIsLiked = await toggleLike({ postId: post._id })
             setIsLiked(newIsLiked);
-            setLikesCount((prev) => (newIsLiked ? prev + 1 : prev - 1))
+
         }
         catch (error) {
             console.log("ERROR ", error);
@@ -83,7 +83,9 @@ export default function Post({ post }: PostProps) {
             {/* POST HEADER*/}
 
             <View style={styles.postHeader}>
-                <Link href={"/notification"} asChild>
+                <Link href={
+                    currentUser?._id === post.author._id ? "/(tabs)/profile" : `/user/${post.author._id}`
+                } asChild>
                     <TouchableOpacity style={styles.postHeaderLeft}>
                         <Image
                             source={{ uri: post.author.image }}
@@ -95,7 +97,7 @@ export default function Post({ post }: PostProps) {
                     </TouchableOpacity>
 
                 </Link>
-                {/* If I'm the owner of teh post ,show delete button */}
+                {/* If I'm the owner of the post ,show delete button Else not show */}
                 {
                     post.author._id === currentUser?._id ? (
                         <TouchableOpacity onPress={handleDelete}>
@@ -144,7 +146,7 @@ export default function Post({ post }: PostProps) {
             {/* Post INFO */}
             <View style={styles.postInfo}>
                 <Text style={styles.likesText}>
-                    {likesCount > 0 ? `${likesCount.toLocaleString()} likes` : "Be the first to like"}
+                    {post.likes > 0 ? `${post.likes.toLocaleString()} likes` : "Be the first to like"}
                 </Text>
 
                 {post.caption && (
@@ -156,11 +158,11 @@ export default function Post({ post }: PostProps) {
                 <TouchableOpacity onPress={() => setShowComments(true)}>
                     <Text style={styles.commentText}>
                         {
-                            commentsCount === 0
+                            post.comments === 0
                                 ? "Add a comment"
-                                : commentsCount === 1
+                                : post.comments === 1
                                     ? "View 1 comment"
-                                    : `View ${commentsCount} comments`
+                                    : `View ${post.comments} comments`
                         }
                     </Text>
                 </TouchableOpacity>
@@ -173,7 +175,7 @@ export default function Post({ post }: PostProps) {
                     postId={post._id}
                     visible={showComments}
                     onClose={() => setShowComments(false)}
-                    onCommentAdded={() => setCommentsCounts((prev) => prev + 1)}
+                    
                 />
             </View>
         </View>
