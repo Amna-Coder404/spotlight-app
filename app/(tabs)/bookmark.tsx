@@ -7,12 +7,13 @@ import { Image } from 'expo-image'
 import { Link } from 'expo-router'
 import { styles } from '@/styles/feed.styles'
 import { COLORS } from '@/constants/theme'
+import NotFound from '@/components/NotFound'
 
 const Bookmark = () => {
   const bookmarkedPosts = useQuery(api.bookmark.getBookmarks);
 
   if (bookmarkedPosts === undefined) return <Loader />
-  if (bookmarkedPosts.length === 0) return <NoBookmarksFound />
+  if (bookmarkedPosts.length === 0) return <NotFound title='No bookmarked posts yet' image={require("../../assets/images/not_bookmark _yet.png")}   />
 
 
  return (
@@ -53,18 +54,3 @@ const Bookmark = () => {
 export default Bookmark
 
 
-
-function NoBookmarksFound() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: COLORS.background,
-      }}
-    >
-      <Text style={{ color: COLORS.primary, fontSize: 22 }}>No bookmarked posts yet</Text>
-    </View>
-  );
-}

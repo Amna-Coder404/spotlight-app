@@ -11,6 +11,7 @@ import { Image } from 'expo-image';
 import { Loader } from '@/components/Loader';
 import * as ImagePicker from "expo-image-picker";
 import FullImageModal from '@/components/FullImageModel';
+import NotFound from '@/components/NotFound';
 
 
 
@@ -133,13 +134,13 @@ const Profile = () => {
             <TouchableOpacity style={styles.editButton} onPress={() => setIsEditModalVisible(true)}>
               <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.shareButton}>
-              <Ionicons name="share-outline" size={20} color={COLORS.white} />
-            </TouchableOpacity>
+            
           </View>
         </View>
 
-        {posts.length === 0 && <NoPostsFound />}
+        {posts.length === 0 && <NotFound title='Not Post Yet' icon='images-outline
+        
+        ' />}
         <FlatList
           data={posts}
           numColumns={3}
@@ -244,22 +245,8 @@ const Profile = () => {
         setVisible={(v) => setShowProfileImage(v)}
       />
     </View>
+
   )
 }
 
 export default Profile
-// Todo Later : Add Another componet for all of this no found function  
-function NoPostsFound() {
-  return (
-    <View style={{
-      height: '100%',
-      backgroundColor: COLORS.background,
-      justifyContent: "center",
-      alignItems: "center"
-    }}>
-      <Ionicons name='images-outline' size={48} color={COLORS.primary} />
-      <Text style={{ fontSize: 20, color: COLORS.white }}>No Post yet</Text>
-
-    </View>
-  )
-}

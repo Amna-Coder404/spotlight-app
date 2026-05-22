@@ -10,13 +10,14 @@ import { COLORS } from '@/constants/theme'
 import { styles } from '@/styles/notifications.styles'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import NotificationItems from '@/components/NotificationItems'
+import NotFound from '@/components/NotFound'
 
 
 const Notification = () => {
   const notifications = useQuery(api.notifications.getNotifications);
 
   if (notifications === undefined) return <Loader />
-  if (notifications.length === 0) return <NotNotificationYet />
+  if (notifications.length === 0) return <NotFound title='Not Notification yet' icon='notifications-outline' />
 
   return (
     <View style={styles.container}>
@@ -40,12 +41,3 @@ const Notification = () => {
 
 export default Notification
 
-
-function NotNotificationYet() {
-  return (
-    <View style={[styles.container, styles.centered]}>
-      <Ionicons name='notifications-outline' size={48} color={COLORS.primary} />
-      <Text style={{ fontSize: 20, color: COLORS.white }}>No Notifitions yet</Text>
-    </View>
-  );
-}

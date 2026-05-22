@@ -1,29 +1,22 @@
-import { View, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native'
-import { useAuth } from '@clerk/clerk-expo'
-import { styles } from '@/styles/feed.styles';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { COLORS } from '@/constants/theme';
-import Story from '@/components/Story';
-import { STORIES } from '@/constants/mock-data';
-import { api } from '@/convex/_generated/api';
 import { Loader } from '@/components/Loader';
 import Post from '@/components/Post';
+import { COLORS } from '@/constants/theme';
+import { api } from '@/convex/_generated/api';
+import { styles } from '@/styles/feed.styles';
+import { useAuth } from '@clerk/clerk-expo';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useQuery } from 'convex/react';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
-import { Image } from 'react-native';
-import { Link } from 'expo-router';
 import StoriesSection from '@/components/Stories';
+import { Link } from 'expo-router';
+import { Image } from 'react-native';
 
 export default function Home() {
   const { signOut } = useAuth();
   const posts = useQuery(api.posts.getFeedPosts);
 
   if (posts === undefined) return <Loader />
-
-  if (posts.length === 0) return <NoPostFound />
-
-
-
 
   return (
     <View style={styles.container}>
@@ -36,19 +29,18 @@ export default function Home() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 60 }}>
-
-
-      </ScrollView>
       {/* Show my all Post  */}
-      <FlatList
+     {posts.length === 0 ? (
+      <NoPostFound />
+     ) : (
+       <FlatList
         data={posts}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => <Post post={item} />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 60 }}
         ListHeaderComponent={<StoriesSection />} />
+     )}
     </View>
 
   )
