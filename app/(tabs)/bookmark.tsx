@@ -1,19 +1,17 @@
-import { View, Text, TouchableOpacity, FlatList, ScrollView } from 'react-native'
-import React from 'react'
-import { useQuery } from 'convex/react'
-import { api } from '@/convex/_generated/api'
 import { Loader } from '@/components/Loader'
-import { Image } from 'expo-image'
-import { Link } from 'expo-router'
-import { styles } from '@/styles/feed.styles'
-import { COLORS } from '@/constants/theme'
 import NotFound from '@/components/NotFound'
+import { api } from '@/convex/_generated/api'
+import { styles } from '@/styles/feed.styles'
+import { useQuery } from 'convex/react'
+import { Image } from 'expo-image'
+import React from 'react'
+import { ScrollView, Text, View } from 'react-native'
 
 const Bookmark = () => {
   const bookmarkedPosts = useQuery(api.bookmark.getBookmarks);
 
   if (bookmarkedPosts === undefined) return <Loader />
-  if (bookmarkedPosts.length === 0) return <NotFound title='No bookmarked posts yet' image={require("../../assets/images/not_bookmark _yet.png")}   />
+  if (bookmarkedPosts.length === 0) return <NotFound title='No bookmarked posts yet' image={require("../../assets/images/not_bookmark_yet.png")}   />
 
 
  return (

@@ -134,13 +134,12 @@ const Profile = () => {
             <TouchableOpacity style={styles.editButton} onPress={() => setIsEditModalVisible(true)}>
               <Text style={styles.editButtonText}>Edit Profile</Text>
             </TouchableOpacity>
-            
+
           </View>
         </View>
 
-        {posts.length === 0 && <NotFound title='Not Post Yet' icon='images-outline
+        {posts.length === 0 && <NotFound title='Not Post Yet' icon='images-outline' />}
         
-        ' />}
         <FlatList
           data={posts}
           numColumns={3}

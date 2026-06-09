@@ -1,15 +1,16 @@
-import { View, Text, TouchableOpacity, ScrollView, Pressable, FlatList, Modal } from 'react-native'
-import React, { useState } from 'react'
-import { useMutation, useQuery } from 'convex/react'
-import { api } from '@/convex/_generated/api'
-import { router, useLocalSearchParams } from 'expo-router'
-import { Doc, Id } from '@/convex/_generated/dataModel'
+import FullImageModal from '@/components/FullImageModel'
 import { Loader } from '@/components/Loader'
+import NotFound from '@/components/NotFound'
+import { COLORS } from '@/constants/theme'
+import { api } from '@/convex/_generated/api'
+import { Doc, Id } from '@/convex/_generated/dataModel'
 import { styles } from '@/styles/profile.styles'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { COLORS } from '@/constants/theme'
+import { useMutation, useQuery } from 'convex/react'
 import { Image } from 'expo-image'
-import FullImageModal from '@/components/FullImageModel'
+import { router, useLocalSearchParams } from 'expo-router'
+import React, { useState } from 'react'
+import { FlatList, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
 export default function UserProfileSection() {
     const [showProfileImage, setShowProfileImage] = useState(false);
@@ -81,10 +82,7 @@ export default function UserProfileSection() {
 
                 <View style={styles.postsGrid}>
                     {posts.length === 0 ? (
-                        <View style={styles.noPostsContainer}>
-                            <Ionicons name="images-outline" size={48} color={COLORS.grey} />
-                            <Text style={styles.noPostsText}>No posts yet</Text>
-                        </View>
+                        <NotFound title='not post yet' icon='images-outline'/>
                     )
                         : (
                             <FlatList

@@ -21,17 +21,17 @@ export default function RootLayout() {
     if (fontLoaded) SplashScreen.hideAsync();
   }, [fontLoaded]);
 
-  useEffect(() => {
-    if (Platform.OS === "android") {
-      NavigationBar.setBackgroundColorAsync("#000000");
-      NavigationBar.setButtonStyleAsync("light");
+  // useEffect(() => {
+  //   if (Platform.OS === "android") {
+  //     NavigationBar.setBackgroundColorAsync("#000000");
+  //     NavigationBar.setButtonStyleAsync("light");
       
-    }
-  }, []);
+  //   }
+  // }, []);
   return (
     <ClerkAndConvexProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: "black" }} onLayout={onLayoutRootView}>
-        {/* <StatusBar style={"light"} /> */}
+        <StatusBar style={"light"} />
         <Initiallayout />
         
         {/* <StatusBar style="dark" /> */}

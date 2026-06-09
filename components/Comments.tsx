@@ -1,7 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { styles } from '@/styles/feed.styles';
-import { formatDistanceToNow } from "date-fns"
+import { formatDistanceToNow } from "date-fns";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { COLORS } from '@/constants/theme';
 import { api } from '@/convex/_generated/api';

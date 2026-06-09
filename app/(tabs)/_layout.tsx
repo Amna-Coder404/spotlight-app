@@ -1,13 +1,12 @@
 
+import { api } from '@/convex/_generated/api';
+import { useAuth } from '@clerk/clerk-expo';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useQuery } from 'convex/react';
+import { Image } from 'expo-image';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { COLORS } from '../../constants/theme';
-import { useAuth } from '@clerk/clerk-expo';
-import { useQuery } from 'convex/react';
-import { api } from '@/convex/_generated/api';
-import { styles } from '@/styles/feed.styles'
-import { Image } from 'expo-image';
 const TabsLayout = () => {
     const { userId } = useAuth();
     const currentUser = useQuery(api.user.getUserByClerkId, userId ? { clerkId: userId } : "skip");
